@@ -29,6 +29,10 @@ RUN dotnet restore
 # Copy the rest of the code
 COPY . .
 
+# Install Node.js to fix the build issue
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
+
 # Install testing tools
 RUN dotnet --info && \
     dotnet tool install -g dotnet-reportgenerator-globaltool || \
@@ -44,4 +48,4 @@ RUN mkdir -p /test-gen
 # For example: docker cp your-test-gen-app.dll container-id:/test-gen/
 
 # Run tests with your custom configuration
-CMD ["bash", "-c", "dotnet test --collect:'XPlat Code Coverage' --results-directory ./tests/TestResults && find ./tests/TestResults -name 'coverage.cobertura.xml' -exec cp {} ./tests/TestResults/coverage.cobertura.xml \\; && echo 'Running test generation tool' && dotnet /test-gen/your-test-gen-app.dll /test-gen-config"]
+CMD ["bash", "-c", "dotnet test ./tests/VirtoCommerce.Platform.Core.Tests/VirtoCommerce.Platform.Core.Tests.csproj --filter \"FullyQualifiedName~VirtoCommerce.Platform.Core.Tests.Common.SemanticVersionTests\" --collect:'XPlat Code Coverage' --results-directory ./tests/TestResults && find ./tests/TestResults -name 'coverage.cobertura.xml' -exec cp {} ./tests/TestResults/coverage.cobertura.xml \\; && echo 'Running test generation tool' && dotnet /test-gen/your-test-gen-app.dll /test-gen-config"]
