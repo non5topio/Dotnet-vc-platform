@@ -23,5 +23,4 @@ namespace VirtoCommerce.Platform.Core.Tests.Common
             var result = SemanticVersion.Parse(a).CompareTo(SemanticVersion.Parse(b));
             Assert.Equal(expectedResult, result);
         }
-    }
 }
